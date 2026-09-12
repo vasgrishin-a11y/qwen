@@ -63,12 +63,19 @@ const nf = (v, d = 0) => (isFinite(v) ? v : 0).toLocaleString('ru-RU', { minimum
 
 /* Тема: единый ключ и точка записи для обеих страниц */
 const IP_THEME_KEY = 'inplan_theme';
+const IP_LAYOUT_KEY = 'inplan_layout';
 function ipGetTheme() {
   try { return localStorage.getItem(IP_THEME_KEY) || 'light'; } catch (e) { return 'light'; }
 }
 function ipSetTheme(t) {
   try { localStorage.setItem(IP_THEME_KEY, t); } catch (e) { /* приватный режим */ }
   document.documentElement.setAttribute('data-theme', t);
+}
+function ipGetLayout() {
+  try { return localStorage.getItem(IP_LAYOUT_KEY) || 'side'; } catch (e) { return 'side'; }
+}
+function ipSetLayout(l) {
+  try { localStorage.setItem(IP_LAYOUT_KEY, l); } catch (e) { /* приватный режим */ }
 }
 
 /* Debounce: откладывает вызов до паузы в событиях (resize и т.п.) */

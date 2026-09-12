@@ -74,6 +74,18 @@ try{document.documentElement.setAttribute('data-theme',localStorage.getItem('inp
   --scp-n-50:#292936;--scp-n-100:#313140;
 }
 
+/* ═══════════════ ВЕРХНЕЕ МЕНЮ (альтернативная раскладка) ═══════════════ */
+.app.layout-top{flex-direction:column}
+.app.layout-top .rail{width:100%!important;flex:0 0 auto;height:auto;position:static;
+  flex-direction:row;align-items:center;padding:8px 16px;gap:16px;border-bottom:1px solid var(--scp-line-2)}
+.app.layout-top .rail-logo{padding:0;min-height:auto}
+.app.layout-top .rail-sub,.app.layout-top .rail-grp{display:none}
+.app.layout-top .rail-nav{flex-direction:row;overflow-x:auto;overflow-y:hidden;flex:1;padding:0;gap:4px}
+.app.layout-top .rail-nav button{border-left:0;border-bottom:4px solid transparent;padding:8px 12px;white-space:nowrap}
+.app.layout-top .rail-nav button.on{border-left:0;border-bottom-color:var(--scp-accent)}
+.app.layout-top .rail-foot{display:none}
+.app.layout-top .wrap{flex:1;min-width:0;display:flex;flex-direction:column}
+
 [data-theme="dark"] .dq.e{background:var(--scp-err-bg)}
 [data-theme="dark"] .dq.w{background:var(--scp-warn-bg)}
 [data-theme="dark"] .dq.i{background:var(--scp-ok-bg)}
@@ -128,6 +140,7 @@ header{background:var(--scp-surface);border-bottom:1px solid var(--scp-line-2);
   color:var(--scp-text-2);cursor:pointer;transition:.12s;margin-top:2px}
 .btn-rail-menu:hover{border-color:var(--scp-accent);color:var(--scp-accent);background:var(--scp-b-50)}
 .btn-rail-menu svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.app.layout-top .btn-rail-menu{display:none}
 h1{font:600 28px/34px 'Open Sans',sans-serif;margin:0;color:var(--scp-text)}
 .h-sub{font-size:12px;line-height:16px;color:var(--scp-text-3);margin-top:2px}
 .hdr-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
@@ -351,7 +364,7 @@ input[type=number]{font-family:'Open Sans',sans-serif}
 @media(max-width:1100px){
   .grid{grid-template-columns:1fr}
   header,main,.fpanel{padding-left:16px;padding-right:16px}
-  .app{flex-direction:column}
+  .app{flex-direction:column!important}
   .rail{width:100%;flex:0 0 auto;height:auto;position:static;flex-direction:column}
   .rail-nav{flex-direction:row;overflow-x:auto}
   .rail-nav button{border-left:0;border-bottom:4px solid transparent}
@@ -427,6 +440,9 @@ input[type=number]{font-family:'Open Sans',sans-serif}
       </div>
       <div class="stat" id="stat"></div>
       <div class="hdr-actions">
+        <button class="icon-btn" id="bLayoutToggle" data-tip="Переключить раскладку меню (слева / сверху)" aria-label="Переключить раскладку меню">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        </button>
         <button class="icon-btn" id="bThemeToggle" data-tip="Переключить тему (тёмная / светлая)" aria-label="Переключить тему">
           <svg id="iconSun" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
           <svg id="iconMoon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -705,6 +721,7 @@ function grp(a,k,ag){const m=new Map();a.forEach(o=>{const key=k(o);if(!m.has(ke
 
 /* ── Палитра графиков In.Plan: данные ≠ бренд ── */
 let THEME=ipGetTheme();
+let LAYOUT=ipGetLayout();
 let PAL=['#2d3f8f','#3fa9c9','#22bb55','#ff9a3b','#f22a41','#7c5cd6','#0d9488','#c026a3','#8a8f98','#af35ff','#d899ff','#5a5a5c'];
 let CH={};
 
@@ -732,7 +749,14 @@ function syncThemeTokens(){
     d1:'#2d3f8f',d2:'#1b98b8',d3:'#1ba84c',d4:'#ea8520',d5:'#e0243b',d6:'#7c5cd6'
   };
 }
+
+function syncLayoutTokens(){
+  const app=$('#app');
+  if(!app)return;
+  if(LAYOUT==='top'){app.classList.add('layout-top');}else{app.classList.remove('layout-top');}
+}
 syncThemeTokens();
+syncLayoutTokens();
 
 /* Цвет текста поверх заливки: контрастно в обеих темах */
 function onFill(hex){
@@ -5059,6 +5083,14 @@ if(bTheme)bTheme.onclick=()=>{
   ipSetTheme(THEME);
   syncThemeTokens();
   if(DS)render();
+};
+/* Переключатель раскладки меню: слева ↔ сверху */
+const bLayout=$('#bLayoutToggle');
+if(bLayout)bLayout.onclick=()=>{
+  const app=$('#app'),isTop=app.classList.toggle('layout-top');
+  LAYOUT=isTop?'top':'side';
+  ipSetLayout(LAYOUT);
+  setTimeout(()=>{if(DS)render()},50);
 };
 /* Делегированные переходы из таблиц: номера заказов и RCA-бейджи (data-атрибуты
    вместо inline-onclick — значения из загруженных файлов не исполняются как код) */
