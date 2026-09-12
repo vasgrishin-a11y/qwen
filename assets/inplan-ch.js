@@ -459,6 +459,7 @@ async function loadVersionAgg(db, gran){
       sum(toFloat64(o_rev)) AS rev, sum(toFloat64(o_cost)) AS cost, sum(toFloat64(o_mar)) AS mar,
       sum(toFloat64(o_dem)) AS dem, sum(toFloat64(o_sal)) AS sal, sum(toFloat64(o_unm)) AS unm,
       sum(toFloat64(o_unm)*toFloat64(o_mpt)) AS lm,
+      avg(toFloat64(o_mpt)) AS avgMpt,
       countIf(toFloat64(o_unm) <= 0.000000001) AS full
     FROM ${ordSub}`);
   Object.assign(out.totals, tot[0]||{});
@@ -1065,12 +1066,14 @@ function vsFlat(v){
   const a = v.agg || {}, t = a.totals || {}, cov = t.cov || {}, op = t.byOp || {};
   const rev = num(t.rev), cost = num(t.cost), mar = num(t.mar), sal = num(t.sal);
   const demUnc = num(cov.demUnc) || (num(cov.ff)+num(cov.uf));
+  const avgMptVal = num(t.avgMpt);
   return {
     _v:v, label:v.label, id:v.id, isBase:v.isBase,
     rev, cost, mar, mrg: rev?mar/rev:0, mpt: sal?mar/sal:0,
     demUnc, demLim: num(t.dem), sal, unm: num(t.unm),
     sl: num(t.dem)?sal/num(t.dem):0, late: num(cov.late),
-    lm: num(t.lm), penNonDel: num(t.penaltyNonDel), penLate: num(t.penaltyLate),
+    lm: num(t.lm), avgMpt: avgMptVal > 0 ? avgMptVal : (sal?mar/sal:0),
+    penNonDel: num(t.penaltyNonDel), penLate: num(t.penaltyLate),
     pd:(op.production||{}).c||0, mv:(op.movement||{}).c||0,
     pcst:(op.procurement||{}).c||0, st:(op.stock||{}).c||0,
     capUtil: num(t.capUtil), bn: num(t.bnCount),
