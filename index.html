@@ -75,7 +75,7 @@ try{document.documentElement.setAttribute('data-theme',localStorage.getItem('inp
 }
 
 /* ═══════════════ ВЕРХНЕЕ МЕНЮ (альтернативная раскладка) ═══════════════ */
-.app.layout-top{flex-direction:column}
+.app.layout-top{flex-direction:column;min-height:100vh}
 .app.layout-top .rail{width:100%!important;flex:0 0 auto;height:auto;position:static;
   flex-direction:row;align-items:center;padding:8px 16px;gap:16px;border-bottom:1px solid var(--scp-line-2)}
 .app.layout-top .rail-logo{padding:0;min-height:auto}
@@ -84,7 +84,7 @@ try{document.documentElement.setAttribute('data-theme',localStorage.getItem('inp
 .app.layout-top .rail-nav button{border-left:0;border-bottom:4px solid transparent;padding:8px 12px;white-space:nowrap}
 .app.layout-top .rail-nav button.on{border-left:0;border-bottom-color:var(--scp-accent)}
 .app.layout-top .rail-foot{display:none}
-.app.layout-top .wrap{flex:1;min-width:0;display:flex;flex-direction:column}
+.app.layout-top .wrap{flex:1;min-width:0;display:flex;flex-direction:column;overflow:auto}
 
 [data-theme="dark"] .dq.e{background:var(--scp-err-bg)}
 [data-theme="dark"] .dq.w{background:var(--scp-warn-bg)}
@@ -129,7 +129,7 @@ body{margin:0;background:var(--scp-bg);color:var(--scp-text);
   font:400 12px 'Open Sans',sans-serif;padding:7px 8px;border-radius:var(--r-s);text-align:left;
   display:flex;align-items:center;justify-content:center}
 .rail-foot button:hover{background:var(--scp-rail-hover);color:#fff}
-.wrap{flex:1;min-width:0;display:flex;flex-direction:column}
+.wrap{flex:1;min-width:0;display:flex;flex-direction:column;overflow:auto}
 
 /* ═══════════════ ШАПКА СТРАНИЦЫ ═══════════════ */
 header{background:var(--scp-surface);border-bottom:1px solid var(--scp-line-2);
