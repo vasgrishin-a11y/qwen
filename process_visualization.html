@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бизнес-процесс «Лубрикант Про» - Визуализация</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .goal-banner {
+            background: #27ae60;
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        
+        .process-flow {
+            padding: 40px;
+        }
+        
+        .phase {
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .phase-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .phase-number {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .phase-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .phase-period {
+            background: #3498db;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 15px;
+        }
+        
+        .phase-responsible {
+            background: #9b59b6;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-left: 80px;
+        }
+        
+        .step-card {
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .step-card.phase1 { border-left-color: #3498db; }
+        .step-card.phase2 { border-left-color: #e74c3c; }
+        .step-card.phase3 { border-left-color: #27ae60; }
+        .step-card.phase4 { border-left-color: #f39c12; }
+        
+        .step-title {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .step-action {
+            color: #34495e;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .business-rule {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .business-rule-title {
+            color: #856404;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        
+        .business-rule-text {
+            color: #856404;
+            font-size: 0.9em;
+        }
+        
+        .artifact {
+            background: #d1ecf1;
+            border: 1px solid #17a2b8;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #0c5460;
+        }
+        
+        .connector {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+        
+        .connector::before {
+            content: '▼';
+            display: block;
+            color: #3498db;
+            font-size: 2em;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+        
+        .scenario-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .scenario-matrix th {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .scenario-matrix td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .scenario-matrix tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .sla-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        
+        .roles-section {
+            background: #f8f9fa;
+            padding: 40px;
+            margin-top: 40px;
+        }
+        
+        .roles-title {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .role-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+        }
+        
+        .role-name {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .role-responsibility {
+            color: #34495e;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .role-decision {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .kpi-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            margin-top: 40px;
+        }
+        
+        .kpi-title {
+            font-size: 2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .kpi-card {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .kpi-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        
+        .kpi-name {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        
+        .kpi-target {
+            color: #f39c12;
+            font-size: 0.9em;
+        }
+        
+        .roadmap {
+            padding: 40px;
+            background: #f8f9fa;
+        }
+        
+        .roadmap-title {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .roadmap-timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .roadmap-timeline::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 50px;
+            right: 50px;
+            height: 4px;
+            background: #3498db;
+            z-index: 0;
+        }
+        
+        .roadmap-phase {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .roadmap-dot {
+            width: 60px;
+            height: 60px;
+            background: #3498db;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: 4px solid white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .roadmap-months {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .roadmap-desc {
+            color: #34495e;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .steps-container {
+                margin-left: 0;
+            }
+            
+            .phase-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .phase-number {
+                margin-bottom: 15px;
+            }
+            
+            .phase-period, .phase-responsible {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            
+            .roadmap-timeline::before {
+                display: none;
+            }
+            
+            .roadmap-timeline {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏭 Бизнес-процесс «Лубрикант Про»</h1>
+            <p>Управление цепью поставок: от стратегического планирования до отгрузки клиенту</p>
+        </div>
+        
+        <div class="goal-banner">
+            🎯 Цель: Максимизация маржинальности продаж при гарантированном уровне сервиса (OTIF > 95%)
+        </div>
+        
+        <div class="process-flow">
+            <!-- Фаза 1 -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-number">1</div>
+                    <div class="phase-title">Стратегическое выравнивание (S&OP)</div>
+                    <div class="phase-period">Ежемесячно (5 недель)</div>
+                    <div class="phase-responsible">Ответственный: Директор по цепям поставок</div>
+                </div>
+                
+                <div class="steps-container">
+                    <div class="step-card phase1">
+                        <div class="step-title">Шаг 1.1: Аудит портфеля и промо-активностей</div>
+                        <div class="step-action"><strong>Действие:</strong> Утверждение списка SKU для продвижения, фиксация ассортиментной матрицы</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">⚖️ Бизнес-правило:</div>
+                            <div class="business-rule-text">Исключение неликвидных позиций (>180 дней оборачиваемости) без согласования Финансового директора запрещено</div>
+                        </div>
+                        <div class="artifact">📄 Артефакт: Утвержденный календарь промо-акций с прогнозом lift-эффекта</div>
+                    </div>
+                    
+                    <div class="step-card phase1">
+                        <div class="step-title">Шаг 1.2: Оценка рисков supply-side</div>
+                        <div class="step-action"><strong>Действие:</strong> Закупки предоставляют «Реальный доступный объем» (Available-to-Promise)</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">⚖️ Бизнес-правило:</div>
+                            <div class="business-rule-text">При прогнозе дефицита сырья >15% запускается Pre-allocation — раннее оповещение клиентов</div>
+                        </div>
+                        <div class="artifact">💰 Решение: Фиксация лимитов закупки в валюте</div>
+                    </div>
+                    
+                    <div class="step-card phase1">
+                        <div class="step-title">Шаг 1.3: Конференция баланса спроса/предложения</div>
+                        <div class="step-action"><strong>Формат:</strong> Очное совещание топ-менеджмента. Только решения, никаких данных!</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">🎯 Сценарии:</div>
+                            <div class="business-rule-text">
+                                • Дефицит → Приоритизация по маржинальности<br>
+                                • Излишки → Спецусловия для распродажи стока
+                            </div>
+                        </div>
+                        <div class="artifact">📋 Итог: Подписанный «Операционный план» (сила бюджета)</div>
+                    </div>
+                    
+                    <div class="step-card phase1">
+                        <div class="step-title">Шаг 1.4: Финансовая валидация</div>
+                        <div class="step-action"><strong>Действие:</strong> Проверка плана на соответствие целевому EBITDA и Cash Flow</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">⛔ Бизнес-правило:</div>
+                            <div class="business-rule-text">План не утверждается, если прогноз кассового разрыва превышает лимит кредитной линии</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card phase1">
+                        <div class="step-title">Шаг 1.5: Коммуникация и запуск</div>
+                        <div class="step-action"><strong>Действие:</strong> Трансляция квот и KPI руководителям региональных продаж</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">👤 Ответственность:</div>
+                            <div class="business-rule-text">Менеджеры несут персональную ответственность за точность прогноза (Forecast Accuracy)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="connector"></div>
+            
+            <!-- Фаза 2 -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-number">2</div>
+                    <div class="phase-title">Тактическое квотирование и аллокация</div>
+                    <div class="phase-period">Еженедельно / По факту дефицита</div>
+                    <div class="phase-responsible">Ответственный: Руководитель отдела планирования</div>
+                </div>
+                
+                <div class="steps-container">
+                    <div class="step-card phase2">
+                        <div class="step-title">🎖️ Приоритет 1: Золотой статус</div>
+                        <div class="step-action">Контрактные обязательства с штрафными санкциями</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">✅ Выполнение:</div>
+                            <div class="business-rule-text">100% от объема контракта</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card phase2">
+                        <div class="step-title">📈 Приоритет 2: Стратегический рост</div>
+                        <div class="step-action">Клиенты с растущей динамикой и высокой маржой</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">📊 Выделение:</div>
+                            <div class="business-rule-text">Пропорционально истории закупок (Baseline) + 10%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card phase2">
+                        <div class="step-title">🛒 Приоритет 3: Спот</div>
+                        <div class="step-action">Разовые покупки без контракта</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">⚠️ Принцип:</div>
+                            <div class="business-rule-text">Остаточное распределение или отказ</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card phase2">
+                        <div class="step-title">🔄 Механизм Rollover</div>
+                        <div class="step-action">Перенос неиспользованных квот</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">❌ Правило:</div>
+                            <div class="business-rule-text">Неиспользованный объем НЕ переносится автоматически, возвращается в общий пул</div>
+                        </div>
+                        <div class="artifact">📝 Исключение: Письменная заявка за 5 дней до конца периода</div>
+                    </div>
+                    
+                    <div class="step-card phase2">
+                        <div class="step-title">🚨 Emergency Reallocation</div>
+                        <div class="step-action">Экстренное перераспределение для Key Account</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">💪 Право менеджера:</div>
+                            <div class="business-rule-text">«Изъять» товар из резерва под спотовые заказы без согласования с Гендиром (лимит: 500 тыс. руб.)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="connector"></div>
+            
+            <!-- Фаза 3 -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-number">3</div>
+                    <div class="phase-title">Операционный прием и обработка заказов</div>
+                    <div class="phase-period">Реальное время</div>
+                    <div class="phase-responsible">Ответственный: Менеджер по работе с клиентами (CSR)</div>
+                </div>
+                
+                <table class="scenario-matrix">
+                    <thead>
+                        <tr>
+                            <th>Сценарий</th>
+                            <th>Условия</th>
+                            <th>Бизнес-действие</th>
+                            <th>SLA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>✅ Полное подтверждение</strong></td>
+                            <td>Наличие > 100% заказа</td>
+                            <td>Автоматическое резервирование. Отправка спецификации.</td>
+                            <td><span class="sla-badge">< 30 мин</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>⚡ Частичная отгрузка</strong></td>
+                            <td>Наличие < 100%, но > «Красной зоны»</td>
+                            <td>Отгрузка наличия. Предложение даты дозагрузки (Backorder). Согласование с клиентом <em>до</em> отгрузки.</td>
+                            <td><span class="sla-badge">< 2 часа</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>🔴 Дефицит (Красная зона)</strong></td>
+                            <td>Налижие ниже страхового запаса</td>
+                            <td>Блокировка отгрузки. Эскалация Руководителю планирования. Предложение замены (Substitution).</td>
+                            <td><span class="sla-badge">< 4 часа</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>❌ Отказ</strong></td>
+                            <td>Полное отсутствие + долгий срок поставки</td>
+                            <td>Официальный отказ с аргументацией. Передача лида в отдел развития.</td>
+                            <td><span class="sla-badge">< 24 часа</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="business-rule" style="margin-top: 20px;">
+                    <div class="business-rule-title">🛑 Правило «Стоп-кран» для кредитного контроля</div>
+                    <div class="business-rule-text">
+                        Система автоматически блокирует отгрузку, если дебиторская задолженность клиента превышает лимит + 5%.<br>
+                        Разблокировка возможна только по визе Финансового директора или после поступления оплаты (Payment on Delivery).
+                    </div>
+                </div>
+            </div>
+            
+            <div class="connector"></div>
+            
+            <!-- Фаза 4 -->
+            <div class="phase">
+                <div class="phase-header">
+                    <div class="phase-number">4</div>
+                    <div class="phase-title">Динамическое управление запасами</div>
+                    <div class="phase-period">Ежедневно / Еженедельно</div>
+                    <div class="phase-responsible">Ответственный: Планировщик</div>
+                </div>
+                
+                <div class="steps-container">
+                    <div class="step-card phase4">
+                        <div class="step-title">🟢 Зеленая зона (Избыток)</div>
+                        <div class="step-action">Автоматический сигнал в закупки на приостановку заказов</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">📢 Действие:</div>
+                            <div class="business-rule-text">Маркетингу дается задание на стимулирование спроса (скидки, бандлы)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card phase4">
+                        <div class="step-title">🟡 Желтая зона (Норма)</div>
+                        <div class="step-action">Работа в штатном режиме</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">📅 Пополнение:</div>
+                            <div class="business-rule-text">По стандартному графику без эскалаций</div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card phase4">
+                        <div class="step-title">🔴 Красная зона (Риск дефицита)</div>
+                        <div class="step-action">Триггер экстренных мер</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">🚀 Три действия:</div>
+                            <div class="business-rule-text">
+                                1. Экспресс-доставка за счет компании<br>
+                                2. Повышение цены для низкомаржинальных сегментов<br>
+                                3. Ручное резервирование под ТОП-5 клиентов
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-card phase4">
+                        <div class="step-title">📦 Оптимизация размещения (MEIO)</div>
+                        <div class="step-action">Решение о хранении товара</div>
+                        <div class="business-rule">
+                            <div class="business-rule-title">⚖️ Критерий:</div>
+                            <div class="business-rule-text">
+                                Fast Movers → Региональные склады (ближе к клиенту)<br>
+                                Slow Movers → Центральный склад (меньше замораживания капитала)
+                            </div>
+                        </div>
+                        <div class="artifact">📅 Пересмотр матрицы: Ежеквартально</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Роли -->
+        <div class="roles-section">
+            <h2 class="roles-title">👥 Ролевая модель и Зоны Ответственности</h2>
+            <div class="roles-grid">
+                <div class="role-card">
+                    <div class="role-name">Коммерческий директор</div>
+                    <div class="role-responsibility"><strong>Ответственность:</strong> Точность прогноза спроса, выполнение плана продаж</div>
+                    <div class="role-decision"><strong>Решения:</strong> Изменение приоритетов клиентов при дефиците. Утверждение промо-бюджета.</div>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-name">Директор по Цепям Поставок</div>
+                    <div class="role-responsibility"><strong>Ответственность:</strong> Доступность товара (OTIF), оборачиваемость запасов</div>
+                    <div class="role-decision"><strong>Решения:</strong> Аллокация дефицитного товара между регионами. Выбор режима доставки.</div>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-name">Финансовый директор</div>
+                    <div class="role-responsibility"><strong>Ответственность:</strong> Маржинальность сделки, управление Cash Flow</div>
+                    <div class="role-decision"><strong>Решения:</strong> Лимиты кредитования клиентов. Одобрение внеплановых затрат на логистику.</div>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-name">Руководитель отдела продаж</div>
+                    <div class="role-responsibility"><strong>Ответственность:</strong> Сбор обратной связи от рынка, работа с возражениями</div>
+                    <div class="role-decision"><strong>Решения:</strong> Согласование частичных отгрузок. Инициирование замены товара.</div>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-name">Планировщик</div>
+                    <div class="role-responsibility"><strong>Ответственность:</strong> Настройка параметров буферов, мониторинг сигналов</div>
+                    <div class="role-decision"><strong>Решения:</strong> Корректировка точек заказа. Запрос экстренной закупки.</div>
+                </div>
+                
+                <div class="role-card">
+                    <div class="role-name">Менеджер по клиентам (CSR)</div>
+                    <div class="role-responsibility"><strong>Ответственность:</strong> Своевременность ввода заказов, коммуникация статуса</div>
+                    <div class="role-decision"><strong>Решения:</strong> Предложение дат отгрузки в рамках доступного остатка (ATP).</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- KPI -->
+        <div class="kpi-section">
+            <h2 class="kpi-title">📊 Система метрик (Еженедельный мониторинг)</h2>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-value">&gt;95%</div>
+                    <div class="kpi-name">OTIF (On Time In Full)</div>
+                    <div class="kpi-target">🎯 Цель: > 95%</div>
+                    <div style="margin-top: 10px; font-size: 0.9em; opacity: 0.9;">Действие при падении: Анализ причин в течение 24 часов</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-value">&lt;20%</div>
+                    <div class="kpi-name">Forecast Accuracy</div>
+                    <div class="kpi-target">🎯 Отклонение < 20%</div>
+                    <div style="margin-top: 10px; font-size: 0.9em; opacity: 0.9;">Влияние: Премия отдела продаж зависит от точности прогноза</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-value">30-45</div>
+                    <div class="kpi-name">Days Sales of Inventory (DSI)</div>
+                    <div class="kpi-target">🎯 Оптимальный диапазон</div>
+                    <div style="margin-top: 10px; font-size: 0.9em; opacity: 0.9;">Баланс между доступностью и оборачиваемостью</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-value">↓</div>
+                    <div class="kpi-name">Cash-to-Cash Cycle</div>
+                    <div class="kpi-target">🎯 Сокращение цикла</div>
+                    <div style="margin-top: 10px; font-size: 0.9em; opacity: 0.9;">Конвертация запасов в деньги быстрее</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Дорожная карта -->
+        <div class="roadmap">
+            <h2 class="roadmap-title">🗺️ Дорожная карта зрелости процесса</h2>
+            <div class="roadmap-timeline">
+                <div class="roadmap-phase">
+                    <div class="roadmap-dot">1</div>
+                    <div class="roadmap-months">Месяц 1-2</div>
+                    <div class="roadmap-desc"><strong>Стабилизация</strong><br>Внедрение жестких правил аллокации при дефиците. Ликвидация ручных резервов «для своих».</div>
+                </div>
+                
+                <div class="roadmap-phase">
+                    <div class="roadmap-dot">2</div>
+                    <div class="roadmap-months">Месяц 3-4</div>
+                    <div class="roadmap-desc"><strong>Интеграция</strong><br>Синхронизация данных между отделом продаж и складом в реальном времени. Портал самообслуживания для клиентов.</div>
+                </div>
+                
+                <div class="roadmap-phase">
+                    <div class="roadmap-dot">3</div>
+                    <div class="roadmap-months">Месяц 5-6</div>
+                    <div class="roadmap-desc"><strong>Оптимизация</strong><br>Переход от реактивного управления (тушение пожаров) к предиктивному (предсказание дефицита).</div>
+                </div>
+                
+                <div class="roadmap-phase">
+                    <div class="roadmap-dot">4</div>
+                    <div class="roadmap-months">Месяц 7+</div>
+                    <div class="roadmap-desc"><strong>Автоматизация решений</strong><br>Автоматическое применение правил ценообразования и аллокации без участия человека в 80% случаев.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
